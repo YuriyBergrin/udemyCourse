@@ -9,6 +9,9 @@ import static constants.Constants.Actions.REQRES_GET_USERS;
 import static constants.Constants.Path.REQRES_PATH;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
+import static io.restassured.matcher.RestAssuredMatchers.matchesXsdInClasspath;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+
 
 public class FirstTest extends TestConfig {
     @Test
@@ -68,5 +71,19 @@ public class FirstTest extends TestConfig {
 
         String contentType = response.getContentType();
         System.out.println("contentType-->\n" + contentType);
+    }
+
+    @Test
+    public void validateXMLSchema() {
+        given().log().uri()
+        .when().get("https://maps.googleapis.com/maps/api/place/findplacefromtext/xml?key=AIzaSyBKR2FPrHDyJJRr_Al4oCoc1j9R9ZK0FBc&input=New York&inputtype=textquery&language=ru&fields=formatted_address,geometry,icon,name,permanently_closed,photos,place_id,plus_code,types")
+        .then().body(matchesXsdInClasspath("xmlSchema.xsd")).log().body();
+    }
+
+    @Test
+    public void validateJSONSchema() {
+        given().log().uri()
+                .when().get("https://maps.googleapis.com/maps/api/place/findplacefromtext/xml?key=AIzaSyBKR2FPrHDyJJRr_Al4oCoc1j9R9ZK0FBc&input=New York&inputtype=textquery&language=ru&fields=formatted_address,geometry,icon,name,permanently_closed,photos,place_id,plus_code,types")
+                .then().body(matchesJsonSchemaInClasspath()).log().body();
     }
 }
