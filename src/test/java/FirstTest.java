@@ -3,6 +3,7 @@ import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static constants.Constants.Actions.REQRES_GET_USERS;
@@ -76,14 +77,42 @@ public class FirstTest extends TestConfig {
     @Test
     public void validateXMLSchema() {
         given().log().uri()
-        .when().get("https://maps.googleapis.com/maps/api/place/findplacefromtext/xml?key=AIzaSyBKR2FPrHDyJJRr_Al4oCoc1j9R9ZK0FBc&input=New York&inputtype=textquery&language=ru&fields=formatted_address,geometry,icon,name,permanently_closed,photos,place_id,plus_code,types")
-        .then().body(matchesXsdInClasspath("xmlSchema.xsd")).log().body();
+                .when().get("https://maps.googleapis.com/maps/api/place/findplacefromtext/xml?key=AIzaSyBKR2FPrHDyJJRr_Al4oCoc1j9R9ZK0FBc&input=New York&inputtype=textquery&language=ru&fields=formatted_address,geometry,icon,name,permanently_closed,photos,place_id,plus_code,types")
+                .then().body(matchesXsdInClasspath("xmlSchema.xsd")).log().body();
     }
 
     @Test
     public void validateJSONSchema() {
         given().log().uri()
-                .when().get("https://maps.googleapis.com/maps/api/place/findplacefromtext/xml?key=AIzaSyBKR2FPrHDyJJRr_Al4oCoc1j9R9ZK0FBc&input=New York&inputtype=textquery&language=ru&fields=formatted_address,geometry,icon,name,permanently_closed,photos,place_id,plus_code,types")
-                .then().body(matchesJsonSchemaInClasspath()).log().body();
+                .when().get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=AIzaSyBKR2FPrHDyJJRr_Al4oCoc1j9R9ZK0FBc&input=New York&inputtype=textquery&language=ru&fields=formatted_address,geometry,icon,name,permanently_closed,photos,place_id,plus_code,types")
+                .then().body(matchesJsonSchemaInClasspath("jsonSchema.json")).log().body();
+    }
+
+    @Test
+    public void getMapOfElementsWithSomeKey() {
+        Response response = given().spec(requestSpecificationForReqres).log().uri().
+                when().get(REQRES_PATH + REQRES_GET_USERS);
+        //System.out.println("response: " + response.asString());
+        Map<String, ?> someObject =
+                response.path("data.find{it.first_name=='George'}");
+        System.out.println("someObject == " + someObject);
+    }
+
+    @Test
+    public void getSingleElementWithSomeKey() {
+        Response response = given().spec(requestSpecificationForReqres).log().uri().
+                when().get(REQRES_PATH + REQRES_GET_USERS);
+        String lastName = response.path("data.find{it.first_name=='George'}.last_name");
+        System.out.println("George lastName is " + lastName);
+    }
+
+    @Test
+    public void getAllElementsWithSomeKey() {
+        Response response = given().spec(requestSpecificationForReqres).log().uri().
+                when().get(REQRES_PATH + REQRES_GET_USERS);
+        List emails = response.
+                path("data.findAll{it.email}.email");
+        System.out.println(response.asString()+"\n\n");
+        System.out.println("emails are " + emails);
     }
 }
