@@ -18,6 +18,8 @@ public class SearchTestPositive extends BaseTest {
                 .build();
 
         apiManager.getGooglePlacesModel().search(requestModel, Method.GET, 200);
+        //
+        apiManager.getGooglePlacesModel().validateResponse("schema.json");
     }
 
     @DataProvider

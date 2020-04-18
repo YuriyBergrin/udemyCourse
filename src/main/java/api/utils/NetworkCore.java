@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.testng.Assert;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class NetworkCore {
 
@@ -16,7 +17,7 @@ public class NetworkCore {
 
     public void sendRequestAndGetResponse(Method method, int code) {
         response = given().spec(requestSpecBuilder.build()).log().uri().log().parameters().
-        when().request(method);
+                when().request(method);
 
         response.then().log().body().assertThat().statusCode(code);
 
@@ -25,5 +26,12 @@ public class NetworkCore {
         } catch (Exception e) {
             Assert.fail("Can`t get response body");
         }
+    }
+
+    /**
+     * валидация json
+     */
+    public void validateResponse(String schemaPath) {
+        response.then().body(matchesJsonSchemaInClasspath(schemaPath)).log().body();
     }
 }

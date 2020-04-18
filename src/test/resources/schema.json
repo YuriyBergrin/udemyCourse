@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "additionalProperties": true,
+  "required": [
+    "candidates",
+    "status"
+  ],
+  "properties": {
+    "candidates": {
+      "$id": "#/properties/candidates",
+      "type": "array",
+      "title": "The Candidates Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": [],
+      "examples": [
+        [
+          {
+            "place_id": "ChIJOwg_06VPwokRYv534QaPC8g"
+          }
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "$id": "#/properties/candidates/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "description": "An explanation about the purpose of this instance.",
+        "default": {},
+        "examples": [
+          {
+            "place_id": "ChIJOwg_06VPwokRYv534QaPC8g"
+          }
+        ],
+        "additionalProperties": true,
+        "required": [
+          "place_id"
+        ],
+        "properties": {
+          "place_id": {
+            "$id": "#/properties/candidates/items/properties/place_id",
+            "type": "string",
+            "title": "The Place_id Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "ChIJOwg_06VPwokRYv534QaPC8g"
+            ]
+          }
+        }
+      }
+    },
+    "status": {
+      "$id": "#/properties/status",
+      "type": "string",
+      "title": "The Status Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "OK"
+      ]
+    }
+  }
+}
